@@ -11,18 +11,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
 import com.example.instabuginternshiptask.R
 import com.example.instabuginternshiptask.presentation.screens.RequestScreen
 import com.example.instabuginternshiptask.presentation.theme.InstabugInternshipTaskTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             InstabugInternshipTaskTheme {
-                val navController = rememberNavController()
-                RequestScreen(navController = navController)
+                RequestScreen()
             }
         }
     }

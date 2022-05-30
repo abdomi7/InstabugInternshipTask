@@ -8,22 +8,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.instabuginternshiptask.presentation.TopBar
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @ExperimentalMaterial3Api
 @Composable
-fun RequestScreen(navController: NavHostController) {
-    val viewModel: RequestScreenViewModel = viewModel()
+fun RequestScreen() {
+    val viewModel: RequestScreenViewModel = hiltViewModel()
     Scaffold(
         modifier = Modifier, topBar = { TopBar() },
         floatingActionButton = {
@@ -62,20 +62,17 @@ fun RequestScreen(navController: NavHostController) {
                 shape = RoundedCornerShape(8.dp),
             )
 
-            repeat(viewModel.textFieldCount.value) {
+            repeat(viewModel.textFieldCount.value) { num ->
 
-                var valueState by remember {
-                    mutableStateOf(TextFieldValue())
-                }
 
                 Row(modifier = Modifier) {
                     OutlinedTextField(
                         modifier = Modifier
                             .weight(0.5F)
                             .padding(12.dp),
-                        value = valueState,
+                        value = viewModel.headersKeys[num].value,
                         onValueChange = {
-                            valueState = it
+                            viewModel.headersKeys[num].value = it
                         },
                         label = {
                             Text(text = "Header Key")
@@ -86,9 +83,9 @@ fun RequestScreen(navController: NavHostController) {
                         modifier = Modifier
                             .weight(0.5F)
                             .padding(12.dp),
-                        value = valueState,
+                        value = viewModel.headersValues[num].value,
                         onValueChange = {
-                            valueState = it
+                            viewModel.headersValues[num].value = it
                         },
                         label = {
                             Text(text = "Header Value")
@@ -102,6 +99,8 @@ fun RequestScreen(navController: NavHostController) {
                 viewModel.textFieldCount.value++
             }, modifier = Modifier.padding(8.dp)) {
                 Text("Add Header")
+                viewModel.headersKeys.add(mutableStateOf(TextFieldValue()))
+                viewModel.headersValues.add(mutableStateOf(TextFieldValue()))
             }
 
             Row(
