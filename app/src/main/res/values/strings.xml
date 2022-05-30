@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Instabug Internship Task</string>
+    <string name="no_internet">No Internet</string>
+    <string name="no_news">No News Found</string>
+    <string name="HTTP_request">Problem making the HTTP request.</string>
+    <string name="url_problem">Problem building the URL</string>
+    <string name="Error_response_code">Error response code:</string>
+    <string name="Problem_JSON_results">Problem retrieving the earthquake JSON results.</string>
 </resources>
