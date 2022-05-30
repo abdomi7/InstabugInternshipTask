@@ -1,4 +1,4 @@
-package com.example.instabuginternshiptask.data.repository
+package com.example.instabuginternshiptask.data.models
 
 class News(
     val webTitle: String,

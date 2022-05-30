@@ -3,6 +3,7 @@ package com.example.instabuginternshiptask.data.repository
 import android.text.TextUtils
 import android.util.Log
 import com.example.instabuginternshiptask.R
+import com.example.instabuginternshiptask.data.models.News
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
