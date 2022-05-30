@@ -1,4 +1,4 @@
-package com.example.instabuginternshiptask.ui.theme
+package com.example.instabuginternshiptask.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
