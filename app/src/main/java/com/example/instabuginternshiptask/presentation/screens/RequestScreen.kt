@@ -11,19 +11,23 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.instabuginternshiptask.presentation.TopBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @ExperimentalMaterial3Api
 @Composable
 fun RequestScreen() {
-    val viewModel: RequestScreenViewModel = hiltViewModel()
+    val viewModel: RequestScreenViewModel = viewModel()
+    val context = LocalContext.current
+
     Scaffold(
         modifier = Modifier, topBar = { TopBar() },
         floatingActionButton = {
@@ -37,7 +41,7 @@ fun RequestScreen() {
                     .clip(CircleShape)
                     .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
                     .clickable {
-
+                        viewModel.testGivenURL(context)
                     },
             )
         },
@@ -94,26 +98,6 @@ fun RequestScreen() {
                     )
                 }
             }
-
-            Button(onClick = {
-                viewModel.textFieldCount.value++
-            }, modifier = Modifier.padding(8.dp)) {
-                Text("Add Header")
-                viewModel.headersKeys.add(mutableStateOf(TextFieldValue()))
-                viewModel.headersValues.add(mutableStateOf(TextFieldValue()))
-            }
-
-            Row(
-                modifier = Modifier.padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                RadioButton(
-                    selected = viewModel.radioState.value,
-                    onClick = { viewModel.radioState.value = viewModel.radioState.value.not() })
-                Text(text = "Post Request")
-            }
-
             if (viewModel.radioState.value) {
                 OutlinedTextField(
                     modifier = Modifier
@@ -128,6 +112,47 @@ fun RequestScreen() {
                     },
                     shape = RoundedCornerShape(8.dp),
                 )
+            }
+            Row(
+                modifier = Modifier.padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = viewModel.radioState.value,
+                    onClick = { viewModel.radioState.value = viewModel.radioState.value.not() })
+                Text(text = "Post Request")
+            }
+            Row(modifier = Modifier) {
+                Button(onClick = {
+                    viewModel.headersKeys.add(mutableStateOf(TextFieldValue()))
+                    viewModel.headersValues.add(mutableStateOf(TextFieldValue()))
+                    viewModel.textFieldCount.value++
+
+                }, modifier = Modifier.padding(8.dp)) {
+                    Text("Add Header")
+
+                }
+                Button(onClick = {
+                    if (viewModel.textFieldCount.value > 0) {
+                        viewModel.textFieldCount.value--
+                    }
+                }, modifier = Modifier.padding(8.dp)) {
+                    Text("Delete Header")
+                }
+            }
+            Column(modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()) {
+                if (viewModel.isLoading.value) {
+
+                    Box(modifier = Modifier.align(CenterHorizontally)) {
+                        CircularProgressIndicator()
+                    }
+                }
+                Text(text = "Response code: ${viewModel.requestData["responseCode"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
+                Text(text = "Error: ${viewModel.requestData["error"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
+                Text(text = "Headers: ${viewModel.requestData["headerFields"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
+                Text(text = "Request body or query parameters: ${viewModel.requestData["body/query"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
             }
         }
     }

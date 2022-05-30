@@ -14,10 +14,8 @@ import androidx.compose.ui.unit.sp
 import com.example.instabuginternshiptask.R
 import com.example.instabuginternshiptask.presentation.screens.RequestScreen
 import com.example.instabuginternshiptask.presentation.theme.InstabugInternshipTaskTheme
-import dagger.hilt.android.AndroidEntryPoint
 
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
