@@ -26,10 +26,15 @@ class RequestScreenViewModel : ViewModel() {
     var headersValues = mutableListOf(mutableStateOf(TextFieldValue()))
     var requestData: MutableMap<String, String> = mutableMapOf()
     val isLoading = mutableStateOf(false)
+
     private fun isOnline(context: Context): Boolean = CheckDeviceStatus(AppStatus(context)).invoke()
 
     private fun makeRequest() =
-        MakeNetworkRequest(HTTPRequest()).invoke(urlTextField.value.text.toString())
+        MakeNetworkRequest(HTTPRequest()).invoke(
+            urlTextField.value.text.toString(),
+            headersKeys,
+            headersValues, textFieldCount, requestBodyState, requestType()
+        )
 
 
     fun testGivenURL(context: Context) {
@@ -50,11 +55,18 @@ class RequestScreenViewModel : ViewModel() {
                     Log.d(TAG, "testGivenURL: ${requestData.toMap().toString()}")
                     isLoading.value = false
                 }.start()
-
-
             }
         } else {
             Toast.makeText(context, "You are offline!!!!", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun requestType(): String {
+        return if (radioState.value) {
+            "POST"
+        } else {
+            "GET"
+        }
+    }
+
 }

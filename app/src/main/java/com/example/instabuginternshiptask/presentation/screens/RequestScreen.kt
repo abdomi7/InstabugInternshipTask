@@ -135,24 +135,40 @@ fun RequestScreen() {
                 Button(onClick = {
                     if (viewModel.textFieldCount.value > 0) {
                         viewModel.textFieldCount.value--
+                        viewModel.headersKeys.removeLastOrNull()
+                        viewModel.headersValues.removeLastOrNull()
                     }
                 }, modifier = Modifier.padding(8.dp)) {
                     Text("Delete Header")
                 }
             }
-            Column(modifier = Modifier
-                .padding(12.dp)
-                .fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .fillMaxWidth()
+            ) {
                 if (viewModel.isLoading.value) {
 
                     Box(modifier = Modifier.align(CenterHorizontally)) {
                         CircularProgressIndicator()
                     }
                 }
-                Text(text = "Response code: ${viewModel.requestData["responseCode"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
-                Text(text = "Error: ${viewModel.requestData["error"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
-                Text(text = "Headers: ${viewModel.requestData["headerFields"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
-                Text(text = "Request body or query parameters: ${viewModel.requestData["body/query"].orEmpty()}", modifier = Modifier.padding(vertical = 12.dp))
+                Text(
+                    text = "Response code: ${viewModel.requestData["responseCode"].orEmpty()}",
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+                Text(
+                    text = "Error: ${viewModel.requestData["error"].orEmpty()}",
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+                Text(
+                    text = "Headers: ${viewModel.requestData["headerFields"].orEmpty()}",
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+                Text(
+                    text = "Request body or query parameters: ${viewModel.requestData["body/query"].orEmpty()}",
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
             }
         }
     }

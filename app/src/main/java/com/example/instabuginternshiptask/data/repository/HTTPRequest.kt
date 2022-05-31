@@ -1,6 +1,8 @@
 package com.example.instabuginternshiptask.data.repository
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.text.input.TextFieldValue
 import com.example.instabuginternshiptask.R
 import java.io.BufferedReader
 import java.io.IOException
@@ -13,11 +15,25 @@ import java.nio.charset.Charset
 
 class HTTPRequest {
     private val LOG_TAG = HTTPRequest::class.java.simpleName
-    fun fetchNewsData(requestUrl: String): MutableMap<String, String> {
+    fun fetchNewsData(
+        requestUrl: String,
+        headersKeys: MutableList<MutableState<TextFieldValue>>,
+        headersValues: MutableList<MutableState<TextFieldValue>>,
+        textFieldCount: MutableState<Int>,
+        requestBodyState: MutableState<TextFieldValue>,
+        requestType: String
+    ): MutableMap<String, String> {
         val url = createUrl(requestUrl)
         var jsonResponse: MutableMap<String, String> = mutableMapOf()
         try {
-            jsonResponse = makeHttpRequest(url)
+            jsonResponse = makeHttpRequest(
+                url,
+                headersKeys,
+                headersValues,
+                textFieldCount,
+                requestBodyState,
+                requestType
+            )
         } catch (e: IOException) {
             Log.e(LOG_TAG, R.string.HTTP_request.toString(), e)
         }
@@ -35,7 +51,14 @@ class HTTPRequest {
     }
 
     @Throws(IOException::class)
-    private fun makeHttpRequest(url: URL?): MutableMap<String, String> {
+    private fun makeHttpRequest(
+        url: URL?,
+        headersKeys: MutableList<MutableState<TextFieldValue>>,
+        headersValues: MutableList<MutableState<TextFieldValue>>,
+        textFieldCount: MutableState<Int>,
+        requestBodyState: MutableState<TextFieldValue>,
+        requestType: String
+    ): MutableMap<String, String> {
 
         val responseData: MutableMap<String, String> = mutableMapOf()
         if (url == null) {
@@ -50,17 +73,47 @@ class HTTPRequest {
             urlConnection.defaultUseCaches = true
             urlConnection.readTimeout = 10000
             urlConnection.connectTimeout = 15000
-            urlConnection.requestMethod = "GET"
-            urlConnection.connect()
+            for (i in 0 until textFieldCount.value) {
+                if (headersKeys[i].value.text.isNotEmpty() && headersValues[i].value.text.isNotEmpty()) {
+                    urlConnection.setRequestProperty(
+                        headersKeys[i].value.text,
+                        headersValues[i].value.text
+                    )
+                }
+            }
+            if (requestType == "POST") {
+                urlConnection.requestMethod = requestType
+                urlConnection.doInput = true
+                urlConnection.doOutput = true
+                urlConnection.connect()
+                urlConnection.outputStream.use { os ->
+                    val input: ByteArray = requestBodyState.value.text.byteInputStream().readBytes()
+                    os.write(input, 0, input.size)
+                }
+                BufferedReader(
+                    InputStreamReader(urlConnection.inputStream, "utf-8")
+                ).use { br ->
+                    val response = java.lang.StringBuilder()
+                    var responseLine: String? = null
+                    while (br.readLine().also { responseLine = it } != null) {
+                        response.append(responseLine!!.trim { it <= ' ' })
+                    }
+                    responseData["body/query"] = responseData["body/query"].orEmpty() + response.toList().orEmpty()
+                }
+            } else {
+                urlConnection.requestMethod = requestType
+                urlConnection.connect()
+            }
+
             responseData["responseCode"] = urlConnection.responseCode.toString()
-            responseData["body/query"] = url.query.orEmpty()
+            responseData["body/query"] = responseData["body/query"].orEmpty() + url.query.orEmpty()
             if (urlConnection.responseCode == 200) {
                 inputStream = urlConnection.inputStream
-                responseData["jsonResponse"] = readFromStream(inputStream)
-                responseData["headerFields"] = urlConnection.headerFields.toString()
+                responseData["jsonResponse"] = readFromStream(inputStream).orEmpty()
+                responseData["headerFields"] = urlConnection.headerFields.orEmpty().toString()
                 responseData["error"] = "No Error"
             } else {
-                responseData["error"] = readFromStream(urlConnection.errorStream)
+                responseData["error"] = readFromStream(urlConnection.errorStream).orEmpty()
                 Log.e(LOG_TAG, R.string.Error_response_code.toString() + urlConnection.responseCode)
             }
         } catch (e: IOException) {
