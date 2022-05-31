@@ -1,5 +1,5 @@
 # Instabug Internship Task
-
+- Application for testing backend APIs with support for GET and POST requests
 ## Features
 
 - Kotlin
