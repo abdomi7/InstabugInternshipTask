@@ -2,7 +2,6 @@ package com.example.instabuginternshiptask.presentation.screens
 
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.os.Looper
 import android.util.Log
 import android.util.Patterns
 import android.webkit.URLUtil
@@ -39,7 +38,6 @@ class RequestScreenViewModel : ViewModel() {
 
 
     fun testGivenURL(context: Context) {
-        Looper.prepare()
         requestData = mutableMapOf()
         if (isOnline(context)) {
             Toast.makeText(context, "You are online", Toast.LENGTH_SHORT).show()
