@@ -94,11 +94,11 @@ class HTTPRequest {
                     InputStreamReader(urlConnection.inputStream, "utf-8")
                 ).use { br ->
                     val response = java.lang.StringBuilder()
-                    var responseLine: String? = null
+                    var responseLine: String?
                     while (br.readLine().also { responseLine = it } != null) {
                         response.append(responseLine!!.trim { it <= ' ' })
                     }
-                    responseData["body/query"] = responseData["body/query"].orEmpty() + response.toList().orEmpty()
+                    responseData["body/query"] = responseData["body/query"].orEmpty() + response.toString().orEmpty()
                 }
             } else {
                 urlConnection.requestMethod = requestType
@@ -141,27 +141,4 @@ class HTTPRequest {
         return output.toString()
     }
 
-//    private fun extractFeatureFromJson(newsJSON: String?): List<News>? {
-//        if (TextUtils.isEmpty(newsJSON)) {
-//            return null
-//        }
-//        val newsList: MutableList<News> = ArrayList()
-//        try {
-//            val baseJsonResponse = JSONObject(newsJSON.toString())
-//            val newsArray = baseJsonResponse.getJSONObject("response")
-//            val results = newsArray.getJSONArray("results")
-//            for (i in 0 until results.length()) {
-//                val currentNews = results.getJSONObject(i)
-//                val webTitle = currentNews.getString("webTitle")
-//                val webPublicationDate = currentNews.getString("webPublicationDate")
-//                val sectionName = currentNews.getString("sectionName")
-//                val webUrl = currentNews.getString("webUrl")
-//                val item = News(webTitle, webPublicationDate, sectionName, webUrl)
-//                newsList.add(item)
-//            }
-//        } catch (e: JSONException) {
-//            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e)
-//        }
-//        return newsList
-//    }
 }

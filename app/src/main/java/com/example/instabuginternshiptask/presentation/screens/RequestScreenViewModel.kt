@@ -2,6 +2,7 @@ package com.example.instabuginternshiptask.presentation.screens
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.os.Looper
 import android.util.Log
 import android.util.Patterns
 import android.webkit.URLUtil
@@ -38,10 +39,12 @@ class RequestScreenViewModel : ViewModel() {
 
 
     fun testGivenURL(context: Context) {
+        Looper.prepare()
         requestData = mutableMapOf()
         if (isOnline(context)) {
             Toast.makeText(context, "You are online", Toast.LENGTH_SHORT).show()
             if (urlTextField.value.text.isBlank()) {
+
                 Toast.makeText(context, "URL cannot be empty", Toast.LENGTH_SHORT).show()
             } else if (!URLUtil.isValidUrl(urlTextField.value.text) && !Patterns.WEB_URL.matcher(
                     urlTextField.value.text
@@ -61,7 +64,7 @@ class RequestScreenViewModel : ViewModel() {
         }
     }
 
-    fun requestType(): String {
+    private fun requestType(): String {
         return if (radioState.value) {
             "POST"
         } else {
