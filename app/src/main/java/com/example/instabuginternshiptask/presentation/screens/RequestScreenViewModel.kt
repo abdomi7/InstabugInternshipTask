@@ -33,7 +33,7 @@ class RequestScreenViewModel : ViewModel() {
         MakeNetworkRequest(HTTPRequest()).invoke(
             urlTextField.value.text.toString(),
             headersKeys,
-            headersValues, textFieldCount, requestBodyState, requestType()
+            headersValues, textFieldCount, requestBodyState.value.text, requestType()
         )
 
 

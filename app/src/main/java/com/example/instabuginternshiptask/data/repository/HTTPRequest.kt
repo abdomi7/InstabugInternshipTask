@@ -20,7 +20,7 @@ class HTTPRequest {
         headersKeys: MutableList<MutableState<TextFieldValue>>,
         headersValues: MutableList<MutableState<TextFieldValue>>,
         textFieldCount: MutableState<Int>,
-        requestBodyState: MutableState<TextFieldValue>,
+        requestBodyState: String,
         requestType: String
     ): MutableMap<String, String> {
         val url = createUrl(requestUrl)
@@ -56,7 +56,7 @@ class HTTPRequest {
         headersKeys: MutableList<MutableState<TextFieldValue>>,
         headersValues: MutableList<MutableState<TextFieldValue>>,
         textFieldCount: MutableState<Int>,
-        requestBodyState: MutableState<TextFieldValue>,
+        requestBodyState: String,
         requestType: String
     ): MutableMap<String, String> {
 
@@ -87,7 +87,7 @@ class HTTPRequest {
                 urlConnection.doOutput = true
                 urlConnection.connect()
                 urlConnection.outputStream.use { os ->
-                    val input: ByteArray = requestBodyState.value.text.byteInputStream().readBytes()
+                    val input: ByteArray = requestBodyState.byteInputStream().readBytes()
                     os.write(input, 0, input.size)
                 }
                 BufferedReader(
@@ -98,7 +98,8 @@ class HTTPRequest {
                     while (br.readLine().also { responseLine = it } != null) {
                         response.append(responseLine!!.trim { it <= ' ' })
                     }
-                    responseData["body/query"] = responseData["body/query"].orEmpty() + response.toString().orEmpty()
+                    responseData["body/query"] =
+                        responseData["body/query"].orEmpty() + response.toString().orEmpty()
                 }
             } else {
                 urlConnection.requestMethod = requestType

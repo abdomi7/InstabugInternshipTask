@@ -12,7 +12,7 @@ class MakeNetworkRequest(
         headersKeys: MutableList<MutableState<TextFieldValue>>,
         headersValues: MutableList<MutableState<TextFieldValue>>,
         textFieldCount: MutableState<Int>,
-        requestBodyState: MutableState<TextFieldValue>,
+        requestBodyState: String,
         requestType: String
     ): MutableMap<String, String> =
         request.fetchNewsData(
